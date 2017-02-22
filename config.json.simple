@@ -1,5 +1,8 @@
 {
     "smzdm" : [
         { "username" : "username", "password" : "password" }
+    ],
+    "nemusic" : [
+        { "cookies" : "cookies"  }
     ]
 }
