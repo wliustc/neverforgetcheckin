@@ -3,6 +3,9 @@
         { "username" : "username", "password" : "password" }
     ],
     "nemusic" : [
-        { "cookies" : "cookies"  }
+        { "username" : "username", "password" : "password" }
+    ],
+    "refreshss" : [
+    	{ "username" : "username", "password" : "password" }
     ]
 }
