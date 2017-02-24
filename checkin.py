@@ -169,7 +169,7 @@ class REFRESHSS_Checkin(object):
                 'passwd' : self.password
         }
         r = self.session.post(self.LOGIN_URL, data = param, headers = headers)
-        r = self.session.get(self.CHECKIN_URL, headers = headers)
+        r = self.session.post(self.CHECKIN_URL, headers = headers)
         if r.status_code != 200:
            raise UN_Exception(r)
         result = json.loads(r.text)
