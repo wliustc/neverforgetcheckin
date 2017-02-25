@@ -6,6 +6,7 @@ import binascii
 import hashlib
 import time
 from Crypto.Cipher import AES
+from bs4 import BeautifulSoup
 
 def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
     if MODLE == "username":
@@ -28,17 +29,16 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
                         " username and password first.")
     elif MODLE == "cookies":
         for private in privates[CONF_NAME]:
-            if ('cookies' in private 
-                and private['cookies'] != 'cookies'):
+            if ( private != {} ):
                 try:
-                    COOKIES = private['cookies']
+                    COOKIES = private
                     boot = CHECKIN_ENGINE(COOKIES)
                     result = boot.checkin()
                     print('success', result)
                 except UN_Exception as e:
                     print('fail', e)
                 except Exception as e:
-                    print('fail', e)
+                    raise e
             else:
                 print("Plz set you " + CONF_NAME  + " cookies first.")
     else:
@@ -81,11 +81,11 @@ class NEMUSIC_Checkin(object):
     WEB_CHECKIN_URL = CHECKIN_URL + "0"
     PHONE_CHECKIN_URL = CHECKIN_URL + "1"
 
-    modulus = ('00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7'
-               'b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280'
-               '104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932'
-               '575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b'
-               '3ece0462db0a22b8e7')
+    modulus = ('00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace61'
+               '5bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fc'
+               'cf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7'
+               'a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d'
+               '546b8e289dc6935b3ece0462db0a22b8e7')
     nonce = '0CoJUm6Qyw8W8jud'
     pubKey = '010001'
 
@@ -97,7 +97,8 @@ class NEMUSIC_Checkin(object):
     def encrypted_request(self, text):
         text = json.dumps(text)
         secKey = self.createSecretKey(16)
-        encText = self.aesEncrypt(self.aesEncrypt(text, self.nonce), secKey)
+        encText = self.aesEncrypt(
+                self.aesEncrypt(text, self.nonce), secKey)
         encSecKey = self.rsaEncrypt(secKey, self.pubKey, self.modulus)
         data = {'params': encText, 'encSecKey': encSecKey}
         return data
@@ -112,7 +113,8 @@ class NEMUSIC_Checkin(object):
 
     def rsaEncrypt(self, text, pubKey, modulus):
         text = text[::-1]
-        rs = pow(int(binascii.hexlify(text), 16),int(pubKey, 16), int(modulus, 16))
+        rs = pow(int(binascii.hexlify(text), 16),
+                int(pubKey, 16), int(modulus, 16))
         return format(rs, 'x').zfill(256)
 
     def createSecretKey(self, size):
@@ -133,7 +135,8 @@ class NEMUSIC_Checkin(object):
         }
         text = {
             'username' : self.username,
-            'password' : hashlib.md5(self.password.encode('utf-8')).hexdigest(),
+            'password' : hashlib.md5(
+                self.password.encode('utf-8')).hexdigest(),
             'rememberLogin' : 'true'
         }
         data = self.encrypted_request(text)
@@ -168,11 +171,48 @@ class REFRESHSS_Checkin(object):
                 'email' : self.username,
                 'passwd' : self.password
         }
-        r = self.session.post(self.LOGIN_URL, data = param, headers = headers)
+        r = self.session.post(self.LOGIN_URL, data = param,
+                headers = headers)
         r = self.session.post(self.CHECKIN_URL, headers = headers)
         if r.status_code != 200:
            raise UN_Exception(r)
         result = json.loads(r.text)
+        return result
+
+class TSDM_Checkin(object):
+    BASE_URL = 'http://www.tsdm.me'
+    CHECKIN_URL = BASE_URL + ('/plugin.php?id=dsu_paulsign%3Asign'
+            '&operation=qiandao&infloat=1&inajax=1')
+
+    def get_formhash(self, target):
+        result = BeautifulSoup(target, "html.parser").find('input',
+                attrs={'name':'formhash'})
+        return result
+
+    def __init__(self, cookies):
+        self.cookies = cookies
+        self.session = requests.Session()
+
+    def checkin(self):
+        headers = {
+                'Host' : 'www.tsdm.me',
+                'Referer' : 'http://www.tsdm.me/',
+                'User-Agent' : ('Mozilla/5.0 (X11; Linux x86_64) '
+                                'AppleWebKit/537.36 (KHTML, like Gecko) '
+                                'Chrome/56.0.2924.87 Safari/537.36'),
+                }
+        r = self.session.get(self.BASE_URL, cookies = self.cookies,
+                headers = headers)
+        prama = {
+                "formhash" : self.get_formhash(r.text)["value"],
+                "qdxq" : "kx",
+                "qdmode" : "1",
+                "todaysay" : "May the force be with you.",
+                "fastreply" : "1"
+        }
+        r = self.session.post(self.CHECKIN_URL, cookies = self.cookies,
+                data = prama, headers = headers)
+        result = r.text
         return result
 
 class UN_Exception(Exception):
@@ -187,3 +227,4 @@ with open('./config.json', 'r') as json_privates:
     start('smzdm', 'username', SMZDM_Checkin)
     start('nemusic', 'username', NEMUSIC_Checkin)
     start('refreshss', 'username', REFRESHSS_Checkin)
+    start('tsdm', 'cookies', TSDM_Checkin)

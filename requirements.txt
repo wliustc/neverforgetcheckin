@@ -1,4 +1,5 @@
 appdirs==1.4.0
+beautifulsoup4==4.5.3
 packaging==16.8
 pycrypto==2.6.1
 pyparsing==2.1.10
