@@ -6,7 +6,7 @@
 
 #使用方法
 
-首先安装python依赖
+首先安装python依赖  
 ```$pip(3) install -r requirements.txt```  
 随后将config.json.simple改名为config.json并在config.json中输入相应信息  
 ```$cp(mv) config.json.simple config.json```  
