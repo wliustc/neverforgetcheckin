@@ -139,8 +139,8 @@ class NEMUSIC_Checkin(object):
                 self.password.encode('utf-8')).hexdigest(),
             'rememberLogin' : 'true'
         }
-        data = self.encrypted_request(text)
-        r = self.session.post(self.LOGIN_URL, data = data,
+        param = self.encrypted_request(text)
+        r = self.session.post(self.LOGIN_URL, data = param,
             headers = headers)
         r = self.session.post(self.WEB_CHECKIN_URL, headers = headers)
         r = self.session.post(self.PHONE_CHECKIN_URL, headers = headers)
@@ -203,7 +203,7 @@ class TSDM_Checkin(object):
                 }
         r = self.session.get(self.BASE_URL, cookies = self.cookies,
                 headers = headers)
-        prama = {
+        param = {
                 "formhash" : self.get_formhash(r.text)["value"],
                 "qdxq" : "kx",
                 "qdmode" : "1",
@@ -211,7 +211,39 @@ class TSDM_Checkin(object):
                 "fastreply" : "1"
         }
         r = self.session.post(self.CHECKIN_URL, cookies = self.cookies,
-                data = prama, headers = headers)
+                data = param, headers = headers)
+        result = r.text
+        return result
+
+class RAINKMC_Checkin(object):
+    BASE_URL = 'https://rainkmc.ml'
+    LOGIN_URL = BASE_URL + ('/member.php?mod=logging&action=login'
+            '&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1')
+    CHECKIN_URL = BASE_URL + ('/plugin.php?id=u179_qdgj&action=punch'
+            '&inajax=1&ajaxtarget=undefined')
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.session = requests.Session()
+
+    def checkin(self):
+        headers = {
+                'Host' : 'rainkmc.ml',
+                'Referer' : 'https://rainkmc.ml/forum.php',
+                'User-Agent' : ('Mozilla/5.0 (X11; Linux x86_64) '
+                                'AppleWebKit/537.36 (KHTML, like Gecko) '
+                                'Chrome/56.0.2924.87 Safari/537.36'),
+        }
+        param = {
+                'username' : self.username,
+                'password' : self.password
+        }
+        r = self.session.post(self.LOGIN_URL, data = param,
+                headers = headers)
+        r = self.session.get(self.CHECKIN_URL, headers = headers)
+        if r.status_code != 200:
+            raise UN_Exception(r)
         result = r.text
         return result
 
@@ -228,3 +260,4 @@ with open('./config.json', 'r') as json_privates:
     start('nemusic', 'username', NEMUSIC_Checkin)
     start('refreshss', 'username', REFRESHSS_Checkin)
     start('tsdm', 'cookies', TSDM_Checkin)
+    start('rainkmc', 'username', RAINKMC_Checkin)
