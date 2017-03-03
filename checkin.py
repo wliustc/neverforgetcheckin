@@ -15,7 +15,7 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
                 except UN_Exception as e:
                     print('fail', e)
                 except Exception as e:
-                    raise e
+                    print('fail', e)
             else:
                 print("Plz set you " + CONF_NAME  +
                         " username and password first.")
@@ -36,10 +36,11 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
     else:
         print("start engin failed")
 
-with open('config.json', 'r') as json_privates:
-    privates = json.load(json_privates)
-    #  start('smzdm', 'username', api.SMZDM)
-    #  start('nemusic', 'username', api.NEMUSIC)
-    #  start('refreshss', 'username', api.REFRESHSS)
-    start('tsdm', 'cookies', api.TSDM)
-    start('rainkmc', 'username', api.RAINKMC)
+if __name__ == "__main__":
+    with open('config.json', 'r') as json_privates:
+        privates = json.load(json_privates)
+        start('smzdm', 'username', api.SMZDM)
+        start('nemusic', 'username', api.NEMUSIC)
+        start('refreshss', 'username', api.REFRESHSS)
+        start('tsdm', 'cookies', api.TSDM)
+        start('rainkmc', 'username', api.RAINKMC)

@@ -30,10 +30,13 @@ class SMZDM(object):
                 'username' : self._USERNAME,
                 'password' : self._PASSWORD
         }
-
-        r = self._SESSION.post(self.LOGIN_URL, data = param,
-                headers = self.HEADERS)
-        r = self._SESSION.get(self.CHECKIN_URL, headers = self.HEADERS)
+        try:
+            r = self._SESSION.post(self.LOGIN_URL, data = param,
+                    headers = self.HEADERS, timeout = 3)
+            r = self._SESSION.get(self.CHECKIN_URL,
+                    headers = self.HEADERS, timeout = 3)
+        except Exception as e:
+            print("failed", e)
         if r.status_code != 200:
             raise UN_Exception(r)
         result = json.loads(r.text)
@@ -104,13 +107,15 @@ class NEMUSIC(object):
             'rememberLogin' : 'true'
         }
         param = self.encrypted_request(text)
-
-        r = self._SESSION.post(self.LOGIN_URL, data = param,
-            headers = self.HEADERS)
-        r = self._SESSION.post(self.WEB_CHECKIN_URL,
-        	headers = self.HEADERS)
-        r = self._SESSION.post(self.PHONE_CHECKIN_URL,
-        	headers = self.HEADERS)
+        try:
+            r = self._SESSION.post(self.LOGIN_URL, data = param,
+                    headers = self.HEADERS, timeout = 3)
+            r = self._SESSION.post(self.WEB_CHECKIN_URL,
+        	    headers = self.HEADERS, timeout = 3)
+            r = self._SESSION.post(self.PHONE_CHECKIN_URL,
+        	    headers = self.HEADERS, timeout = 3)
+        except Exception as e:
+            print("failed", e)
         if r.status_code != 200:
             raise UN_Exception(r)
         result = json.loads(r.text)
@@ -138,12 +143,15 @@ class REFRESHSS(object):
                 'email' : self._USERNAME,
                 'passwd' : self._PASSWORD
         }
-
-        r = self._SESSION.post(self.LOGIN_URL, data = param,
-                headers = self.HEADERS)
-        r = self._SESSION.post(self.CHECKIN_URL, headers = self.HEADERS)
+        try:
+            r = self._SESSION.post(self.LOGIN_URL, data = param,
+                    headers = self.HEADERS, timeout = 3)
+            r = self._SESSION.post(self.CHECKIN_URL,
+                    headers = self.HEADERS, timeout = 3)
+        except Exception as e:
+            print("failed", e)
         if r.status_code != 200:
-           raise UN_Exception(r)
+            raise UN_Exception(r)
         result = json.loads(r.text)
         return result
 
@@ -169,18 +177,22 @@ class TSDM(object):
         return result
 
     def checkin(self):
-        r = self._SESSION.get(self.BASE_URL, cookies = self._COOKIES,
-                headers = self.HEADERS)
-
-        param = {
-                "formhash" : self.get_formhash(r.text)["value"],
-                "qdxq" : "kx",
-                "qdmode" : "1",
-                "todaysay" : "May the force be with you.",
-                "fastreply" : "1"
-        }
-        r = self._SESSION.post(self.CHECKIN_URL, cookies = self._COOKIES,
-                data = param, headers = self.HEADERS)
+        try:
+            r = self._SESSION.get(self.BASE_URL, cookies = self._COOKIES,
+                    headers = self.HEADERS, timeout = 3)
+            param = {
+                    "formhash" : self.get_formhash(r.text)["value"],
+                    "qdxq" : "kx",
+                    "qdmode" : "1",
+                    "todaysay" : "May the force be with you.",
+                    "fastreply" : "1"
+            }
+            r = self._SESSION.post(self.CHECKIN_URL,cookies = self._COOKIES,
+                    data = param, headers = self.HEADERS, timeout = 3)
+        except Exception as e:
+            print("failed", e)
+        if r.status_code != 200:
+            raise UN_Exception(r)
         result = r.text
         return result
 
@@ -208,10 +220,13 @@ class RAINKMC(object):
                 'username' : self._USERNAME,
                 'password' : self._PASSWORD
         }
-
-        r = self._SESSION.post(self.LOGIN_URL, data = param,
-                headers = self.HEADERS)
-        r = self._SESSION.get(self.CHECKIN_URL, headers = self.HEADERS)
+        try:
+            r = self._SESSION.post(self.LOGIN_URL, data = param,
+                    headers = self.HEADERS, timeout = 3)
+            r = self._SESSION.get(self.CHECKIN_URL,
+                    headers = self.HEADERS, timeout = 3)
+        except Exception as e:
+            print("failed", e)
         if r.status_code != 200:
             raise UN_Exception(r)
         result = r.text
