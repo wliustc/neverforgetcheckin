@@ -12,9 +12,7 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
                     BOOT = CHECKIN_ENGINE(USERNAME, PASSWORD)
                     result = BOOT.checkin()
                     print('success', result)
-                except UN_Exception as e:
-                    print('fail', e)
-                except Exception as e:
+                except api.UN_Exception as e:
                     print('fail', e)
             else:
                 print("Plz set you " + CONF_NAME  +
@@ -27,10 +25,8 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
                     boot = CHECKIN_ENGINE(COOKIES)
                     result = boot.checkin()
                     print('success', result)
-                except UN_Exception as e:
+                except api.UN_Exception as e:
                     print('fail', e)
-                except Exception as e:
-                    raise e
             else:
                 print("Plz set you " + CONF_NAME  + " cookies first.")
     else:

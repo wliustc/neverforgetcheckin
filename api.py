@@ -35,11 +35,12 @@ class SMZDM(object):
                     headers = self.HEADERS, timeout = 3)
             r = self._SESSION.get(self.CHECKIN_URL,
                     headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'SMZDM checkin failed!'
+            else:
+                result = json.loads(r.text)
         except Exception as e:
             print("failed", e)
-        if r.status_code != 200:
-            raise UN_Exception(r)
-        result = json.loads(r.text)
         return result
 
 class NEMUSIC(object):
@@ -114,11 +115,12 @@ class NEMUSIC(object):
         	    headers = self.HEADERS, timeout = 3)
             r = self._SESSION.post(self.PHONE_CHECKIN_URL,
         	    headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'Netease Music checkin failed!'
+            else:
+                result = json.loads(r.text)
         except Exception as e:
             print("failed", e)
-        if r.status_code != 200:
-            raise UN_Exception(r)
-        result = json.loads(r.text)
         return result
 
 class REFRESHSS(object):
@@ -148,11 +150,12 @@ class REFRESHSS(object):
                     headers = self.HEADERS, timeout = 3)
             r = self._SESSION.post(self.CHECKIN_URL,
                     headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'Refreshss checkin failed!'
+            else:
+                result = json.loads(r.text)
         except Exception as e:
             print("failed", e)
-        if r.status_code != 200:
-            raise UN_Exception(r)
-        result = json.loads(r.text)
         return result
 
 class TSDM(object):
@@ -189,11 +192,12 @@ class TSDM(object):
             }
             r = self._SESSION.post(self.CHECKIN_URL,cookies = self._COOKIES,
                     data = param, headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'TSDM Checkin failed!'
+            else:
+                result = r.text
         except Exception as e:
             print("failed", e)
-        if r.status_code != 200:
-            raise UN_Exception(r)
-        result = r.text
         return result
 
 class RAINKMC(object):
@@ -225,11 +229,12 @@ class RAINKMC(object):
                     headers = self.HEADERS, timeout = 3)
             r = self._SESSION.get(self.CHECKIN_URL,
                     headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'Rainkmc checkin failed!'
+            else:
+                result = r.text
         except Exception as e:
             print("failed", e)
-        if r.status_code != 200:
-            raise UN_Exception(r)
-        result = r.text
         return result
 
 class UN_Exception(Exception):
