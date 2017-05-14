@@ -195,7 +195,7 @@ class TSDM(object):
             if r.status_code != 200:
                 result = 'TSDM Checkin failed!'
             else:
-                result = r.text
+                result = 'TSDM checkin succeed!'
         except Exception as e:
             print("failed", e)
         return result
@@ -232,7 +232,33 @@ class RAINKMC(object):
             if r.status_code != 200:
                 result = 'Rainkmc checkin failed!'
             else:
-                result = r.text
+                result = 'Rainkmc checkin succeed!'
+        except Exception as e:
+            print("failed", e)
+        return result
+
+class READFREE(object):
+    BASE_URL = 'http://readfree.me'
+    CHECKIN_URL = BASE_URL + '/checkin'
+    HEADERS = {
+        'Host' : 'readfree.me',
+        'User-Agent' : ('Mozilla/5.0 (X11; Linux x86_64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/56.0.2924.87 Safari/537.36'),
+    }
+
+    def __init__(self,COOKIES):
+        self._COOKIES = COOKIES
+        self._SESSION = requests.Session()
+
+    def checkin(self):
+        try:
+            r = self._SESSION.get(self.CHECKIN_URL, cookies = self._COOKIES,
+                    headers = self.HEADERS, timeout = 3)
+            if r.status_code != 200:
+                result = 'Readfree checkin failed!'
+            else:
+                result = 'Readfree checkin succeed!'
         except Exception as e:
             print("failed", e)
         return result

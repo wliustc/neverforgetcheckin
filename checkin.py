@@ -35,8 +35,10 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
 if __name__ == "__main__":
     with open('config.json', 'r') as json_privates:
         privates = json.load(json_privates)
+
         start('smzdm', 'username', api.SMZDM)
         start('nemusic', 'username', api.NEMUSIC)
         start('refreshss', 'username', api.REFRESHSS)
         start('tsdm', 'cookies', api.TSDM)
         start('rainkmc', 'username', api.RAINKMC)
+        start('readfree','cookies',api.READFREE)
