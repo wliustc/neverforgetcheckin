@@ -1,5 +1,6 @@
 import api
 import json
+import threading
 
 def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
     if MODLE == "username":
@@ -33,12 +34,15 @@ def start(CONF_NAME, MODLE, CHECKIN_ENGINE):
         print("start engin failed")
 
 if __name__ == "__main__":
-    with open('config.json', 'r') as json_privates:
-        privates = json.load(json_privates)
+    try:
+        with open('config.json', 'r') as json_privates:
+            privates = json.load(json_privates)
 
-        start('smzdm', 'username', api.SMZDM)
-        start('nemusic', 'username', api.NEMUSIC)
-        start('refreshss', 'username', api.REFRESHSS)
-        start('tsdm', 'cookies', api.TSDM)
-        start('rainkmc', 'username', api.RAINKMC)
-        start('readfree','cookies',api.READFREE)
+            threading.Thread(target=start, args=('smzdm', 'username', api.SMZDM,)).start()
+            threading.Thread(target=start, args=('nemusic', 'username', api.NEMUSIC,)).start()
+            #  threading.Thread(target=start, args=('refreshss', 'username', api.REFRESHSS,)).start()
+            threading.Thread(target=start, args=('tsdm', 'cookies', api.TSDM,)).start()
+            threading.Thread(target=start, args=('rainkmc', 'username', api.RAINKMC,)).start()
+            threading.Thread(target=start, args=('readfree','cookies',api.READFREE,)).start()
+    except:
+        print("error")
